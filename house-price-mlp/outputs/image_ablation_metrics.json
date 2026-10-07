@@ -1,0 +1,50 @@
+{
+  "dataset": "Kaggle House Prices and Images - SoCal; 15,474 rows",
+  "comparison_method": "Same random_state=42 65/15/20 split; separate RandomizedSearchCV runs with 4 candidates and 3 folds; MLPRegressor; original USD metrics; training-split target bounds applied.",
+  "tabular_model": {
+    "features": [
+      "citi",
+      "bed",
+      "bath",
+      "sqft"
+    ],
+    "validation_metrics": {
+      "mae_usd": 134011.67438247372,
+      "mse_usd_squared": 48812904760.43855,
+      "rmse_usd": 220936.42696585495,
+      "r2": 0.6667387713474995
+    },
+    "test_metrics": {
+      "mae_usd": 135548.70855993778,
+      "mse_usd_squared": 50412801474.6606,
+      "rmse_usd": 224527.95254636023,
+      "r2": 0.6579663667662423
+    }
+  },
+  "image_enhanced_model": {
+    "features": "tabular plus 10 RGB/color statistics and 1,568 HOG descriptors reduced to 24 PCA components",
+    "validation_metrics": {
+      "mae_usd": 184218.2911102248,
+      "mse_usd_squared": 79497662142.98268,
+      "rmse_usd": 281953.29780476535,
+      "r2": 0.45724417158136454
+    },
+    "test_metrics": {
+      "mae_usd": 181823.10127555695,
+      "mse_usd_squared": 78910954099.57602,
+      "rmse_usd": 280910.9362406099,
+      "r2": 0.4646161382999796
+    },
+    "best_params": {
+      "regressor__mlp__learning_rate_init": 0.001,
+      "regressor__mlp__hidden_layer_sizes": [
+        64,
+        32
+      ],
+      "regressor__mlp__batch_size": 128,
+      "regressor__mlp__alpha": 0.001
+    }
+  },
+  "test_mae_relative_change_percent": 34.13857144581889,
+  "conclusion": "The tested handcrafted image-enhanced model performed worse on this held-out split; keep the tabular MLP as the default. This result applies to these handcrafted features and tuning budget, not all possible image models."
+}

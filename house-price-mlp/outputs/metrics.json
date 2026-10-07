@@ -1,0 +1,62 @@
+{
+  "project": "House Price Prediction using Multilayer Perceptron (MLP)",
+  "dataset_csv": "socal2.csv",
+  "target_column": "price",
+  "target_unit": "USD",
+  "target_transform": "log1p(price) during fit; predictions inverse-transformed with expm1",
+  "prediction_bounds_usd": {
+    "minimum": 195000.0,
+    "maximum": 2000000.0
+  },
+  "prediction_postprocessing": "Clip inverse-transformed predictions to the minimum and maximum prices observed in the training split.",
+  "rows_after_target_validation": 15474,
+  "split_rows": {
+    "train": 10057,
+    "validation": 2322,
+    "test": 3095
+  },
+  "missing_values_by_column": {
+    "image_id": 0,
+    "street": 0,
+    "citi": 0,
+    "n_citi": 0,
+    "bed": 0,
+    "bath": 0,
+    "sqft": 0,
+    "price": 0
+  },
+  "price_skewness_raw": 1.349449756505387,
+  "price_skewness_log1p": 0.03786533529783825,
+  "features_used": [
+    "citi",
+    "bed",
+    "bath",
+    "sqft"
+  ],
+  "image_features_used": false,
+  "image_feature_count": 0,
+  "random_state": 42,
+  "model": "sklearn.neural_network.MLPRegressor",
+  "best_params": {
+    "regressor__mlp__learning_rate_init": 0.001,
+    "regressor__mlp__hidden_layer_sizes": [
+      64,
+      32
+    ],
+    "regressor__mlp__batch_size": 128,
+    "regressor__mlp__alpha": 0.001
+  },
+  "best_cv_mae_usd": 196151.7964820294,
+  "validation_metrics": {
+    "mae_usd": 134011.67438247372,
+    "mse_usd_squared": 48812904760.43855,
+    "rmse_usd": 220936.42696585495,
+    "r2": 0.6667387713474995
+  },
+  "test_metrics": {
+    "mae_usd": 135548.70855993778,
+    "mse_usd_squared": 50412801474.6606,
+    "rmse_usd": 224527.95254636023,
+    "r2": 0.6579663667662423
+  }
+}
