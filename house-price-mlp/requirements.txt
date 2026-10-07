@@ -8,3 +8,6 @@ joblib==1.6.0
 Pillow==12.3.0
 scikit-image==0.26.0
 requests==2.34.2
+torch
+torchvision
+tqdm
