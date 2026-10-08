@@ -145,8 +145,7 @@ def train_model(data_dir: Path, model_path: Path, outputs_dir: Path, use_images:
     with (outputs_dir / "metrics.json").open("w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2)
     create_evaluation_artifacts(
-        y_test.to_numpy(), test_prediction, y.to_numpy(), best_model,
-        outputs_dir, validation=(y_val.to_numpy(), val_prediction),
+        y_test.to_numpy(), test_prediction, y.to_numpy(), best_model, outputs_dir
     )
     print("\nTest metrics (original USD scale):")
     for name, value in metrics["test_metrics"].items():

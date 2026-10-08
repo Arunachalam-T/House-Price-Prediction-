@@ -119,6 +119,8 @@ def main() -> None:
         metrics = evaluate_saved_model(bundle, frame, args.outputs)
         _print_metrics(metrics)
     elif args.predict:
+        if not args.model.is_file():
+            raise FileNotFoundError(f"Saved model not found: {args.model}. Run `python main.py` first.")
         csv_path = ensure_csv(args.data)
         frame = load_dataset(csv_path)
         interactive_predict(args.model, image_path=args.image, reference_frame=frame)

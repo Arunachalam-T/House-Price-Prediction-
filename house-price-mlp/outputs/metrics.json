@@ -25,8 +25,8 @@
     "sqft": 0,
     "price": 0
   },
-  "price_skewness_raw": 1.349449756505387,
-  "price_skewness_log1p": 0.03786533529783825,
+  "price_skewness_raw": 1.3494497565053867,
+  "price_skewness_log1p": 0.03786533529783819,
   "features_used": [
     "citi",
     "bed",
@@ -46,15 +46,15 @@
     "regressor__mlp__batch_size": 128,
     "regressor__mlp__alpha": 0.001
   },
-  "best_cv_mae_usd": 196151.7964820294,
+  "best_cv_mae_usd": 196151.7964820296,
   "validation_metrics": {
-    "mae_usd": 134011.67438247372,
-    "mse_usd_squared": 48812904760.43855,
-    "rmse_usd": 220936.42696585495,
-    "r2": 0.6667387713474995
+    "mae_usd": 134011.6743824738,
+    "mse_usd_squared": 48812904760.43861,
+    "rmse_usd": 220936.42696585506,
+    "r2": 0.6667387713474991
   },
   "test_metrics": {
-    "mae_usd": 135548.70855993778,
+    "mae_usd": 135548.70855993775,
     "mse_usd_squared": 50412801474.6606,
     "rmse_usd": 224527.95254636023,
     "r2": 0.6579663667662423

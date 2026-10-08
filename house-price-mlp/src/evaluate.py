@@ -28,8 +28,7 @@ def metric_dict(actual: np.ndarray, predicted: np.ndarray) -> dict:
 
 
 def create_evaluation_artifacts(actual: np.ndarray, predicted: np.ndarray,
-                                all_prices: np.ndarray, fitted_model, output_dir: Path,
-                                validation=None) -> None:
+                                all_prices: np.ndarray, fitted_model, output_dir: Path) -> None:
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     actual = np.asarray(actual, dtype=float)
@@ -136,6 +135,5 @@ def evaluate_saved_model(bundle: dict, frame, output_dir: Path) -> dict:
         metrics = {}
     metrics.update(refreshed_metrics)
     metrics_path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
-    create_evaluation_artifacts(y[test_ids], prediction, y, bundle["estimator"], output_dir,
-                                validation=(y[validation_ids], validation_prediction))
+    create_evaluation_artifacts(y[test_ids], prediction, y, bundle["estimator"], output_dir)
     return metrics

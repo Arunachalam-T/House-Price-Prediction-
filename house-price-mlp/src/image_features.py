@@ -15,7 +15,8 @@ IMAGE_SIZE = (64, 64)
 def feature_names() -> list[str]:
     """Return stable image feature names (RGB stats, simple color ratios, and HOG)."""
     # HOG length for 64x64, 8 orientations, 8x8 cells, 2x2 blocks: 7*7*4*8 = 1,568.
-    names = [f"color_{channel}_{stat}" for channel in ("r", "g", "b") for stat in ("mean", "std")]
+    names = [f"color_{channel}_mean" for channel in ("r", "g", "b")]
+    names += [f"color_{channel}_std" for channel in ("r", "g", "b")]
     names += ["color_brightness", "color_saturation", "color_red_green_ratio", "color_blue_red_ratio"]
     names += [f"hog_{i:04d}" for i in range(1568)]
     return names

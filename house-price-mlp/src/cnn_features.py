@@ -61,18 +61,4 @@ def extract_image_feature_frame(frame: pd.DataFrame, image_dir: Path) -> pd.Data
         print(f"Image features unavailable for {missing:,} rows; model imputation will handle them.")
     return pd.DataFrame(np.vstack(rows), columns=names, index=frame.index)
 
-def extract_single_image_cnn(image_path) -> dict[str, float]:
-    """Extract CNN features for a single image (for prediction mode)."""
-    names = [f"cnn_{i:04d}" for i in range(512)]
-    if image_path is None:
-        return {name: float("nan") for name in names}
-    path = Path(image_path).expanduser()
-    if not path.is_file():
-        raise FileNotFoundError(f"Image file not found: {path}")
-    try:
-        extractor = CNNFeatureExtractor()
-        with Image.open(path) as image:
-            values = extractor.extract(image)
-    except (OSError, ValueError) as exc:
-        raise ValueError(f"Could not read image file {path}: {exc}") from exc
-    return dict(zip(names, map(float, values)))
+
