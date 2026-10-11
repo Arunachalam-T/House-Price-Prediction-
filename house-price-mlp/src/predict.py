@@ -8,7 +8,7 @@ from typing import Callable
 import joblib
 import pandas as pd
 
-from .image_features import extract_single_image
+from .cnn_features import extract_single_image
 from .prediction_utils import clip_predictions
 
 LABELS = {

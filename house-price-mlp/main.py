@@ -28,11 +28,13 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--data", type=Path, default=DEFAULT_DATA, help="Dataset directory (default: ./data)")
     parser.add_argument("--model", type=Path, default=DEFAULT_MODEL, help="Saved model path")
     parser.add_argument("--outputs", type=Path, default=DEFAULT_OUTPUTS, help="Metrics/plots output directory")
-    parser.add_argument("--use-images", action="store_true", help="Developer training option: add handcrafted linked-photo features")
+    parser.add_argument("--use-images", action=argparse.BooleanOptionalAction, default=True, help="Include ResNet-18 CNN photo features (default: True)")
     parser.add_argument("--image", type=Path, help="Optional exterior photo for --predict with an image-trained model")
+
     parser.add_argument("--search-iterations", type=int, default=4, help="RandomizedSearchCV candidates (default: 4; maximum 8)")
     parser.add_argument("--cv", type=int, default=3, help="Training-fold CV count (default: 3)")
     return parser
+
 
 
 def _print_metrics(metrics: dict) -> None:

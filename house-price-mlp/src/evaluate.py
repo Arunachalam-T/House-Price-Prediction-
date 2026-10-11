@@ -95,19 +95,22 @@ def create_evaluation_artifacts(actual: np.ndarray, predicted: np.ndarray,
 def evaluate_saved_model(bundle: dict, frame, output_dir: Path) -> dict:
     """Re-evaluate the saved model on the reproducible held-out 20% split."""
     from sklearn.model_selection import train_test_split
-    from .image_features import extract_image_feature_frame
+    from .cnn_features import extract_image_feature_frame
     from .preprocessing import select_features
     from .data_loader import load_dataset
 
     frame = load_dataset(frame) if isinstance(frame, (str, Path)) else frame.copy()
     if bundle.get("uses_images"):
+        data_dir = Path(frame.attrs.get("data_dir", "data"))
         image_dir = Path(bundle.get("image_directory", "socal_pics"))
         if not image_dir.is_absolute():
-            image_dir = Path(frame.attrs.get("data_dir", "data")) / image_dir
-        img = extract_image_feature_frame(frame, image_dir)
+            image_dir = data_dir / image_dir
+        cache_path = data_dir / "cnn_features_cache.csv"
+        img = extract_image_feature_frame(frame, image_dir, cache_path=cache_path)
         X = __import__("pandas").concat([select_features(frame), img], axis=1)
     else:
         X = select_features(frame)
+
     X = X.reindex(columns=bundle["features"])
     y = frame[bundle["target_column"]].astype(float).to_numpy()
     ids = np.arange(len(frame))

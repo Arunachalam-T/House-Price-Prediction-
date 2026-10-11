@@ -15,7 +15,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import TransformedTargetRegressor
 
 from .data_loader import ensure_csv, ensure_images, load_dataset
-from .image_features import extract_image_feature_frame
+from .cnn_features import extract_image_feature_frame
 from .preprocessing import TARGET_COLUMN, build_preprocessor, select_features
 from .evaluate import create_evaluation_artifacts, metric_dict
 from .prediction_utils import clip_predictions
@@ -59,11 +59,13 @@ def train_model(data_dir: Path, model_path: Path, outputs_dir: Path, use_images:
     image_columns: list[str] = []
     if use_images:
         image_dir = ensure_images(data_dir)
-        image_frame = extract_image_feature_frame(frame, image_dir)
+        cache_path = data_dir / "cnn_features_cache.csv"
+        image_frame = extract_image_feature_frame(frame, image_dir, cache_path=cache_path)
         image_columns = image_frame.columns.tolist()
         X = pd.concat([select_features(frame), image_frame], axis=1)
     else:
         X = select_features(frame)
+
     y = pd.to_numeric(frame[TARGET_COLUMN], errors="coerce").astype(float)
 
     # Fixed, independent partitions: 65% train, 15% validation, 20% test.

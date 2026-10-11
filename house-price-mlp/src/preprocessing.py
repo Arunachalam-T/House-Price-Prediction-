@@ -27,8 +27,9 @@ def select_features(frame: pd.DataFrame) -> pd.DataFrame:
 def build_preprocessor(features: pd.DataFrame, image_feature_columns: Iterable[str] = ()) -> ColumnTransformer:
     """Create imputing/scaling/encoding transformers; fit occurs only within training folds."""
     image_cols = set(image_feature_columns)
+    cnn_cols = [c for c in features.columns if c in image_cols and (c.startswith("cnn_") or c.startswith("img_"))]
     hog_cols = [c for c in features.columns if c in image_cols and c.startswith("hog_")]
-    image_stats = [c for c in features.columns if c in image_cols and c not in hog_cols]
+    image_stats = [c for c in features.columns if c in image_cols and c not in hog_cols and c not in cnn_cols]
     other_cols = [c for c in features.columns if c not in image_cols]
     numeric_cols = [c for c in other_cols if pd.api.types.is_numeric_dtype(features[c])]
     categorical_cols = [c for c in other_cols if c not in numeric_cols]
@@ -50,12 +51,18 @@ def build_preprocessor(features: pd.DataFrame, image_feature_columns: Iterable[s
             ("scaler", StandardScaler()),
         ]), image_stats))
     if hog_cols:
-        # PCA is learned inside each training fold; image descriptors never see validation/test rows.
         transformers.append(("image_hog", Pipeline([
             ("imputer", SimpleImputer(strategy="median")),
             ("scaler", StandardScaler()),
             ("pca", PCA(n_components=24, random_state=42, svd_solver="randomized")),
         ]), hog_cols))
+    if cnn_cols:
+        transformers.append(("image_cnn", Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", StandardScaler()),
+            ("pca", PCA(n_components=32, random_state=42, svd_solver="randomized")),
+        ]), cnn_cols))
+
     if not transformers:
         raise ValueError("No features were available to preprocess.")
     return ColumnTransformer(transformers=transformers, remainder="drop", verbose_feature_names_out=False)
