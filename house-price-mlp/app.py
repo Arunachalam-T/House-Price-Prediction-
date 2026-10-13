@@ -178,9 +178,20 @@ with tab_graphs:
         m_col4.metric("Dataset Size", f"{metrics_data.get('rows_after_target_validation', 15474):,} Homes")
     
     st.markdown("---")
+
+    # Architecture Comparison Section
+    comp_chart = OUTPUTS_DIR / "model_comparison.png"
+    if comp_chart.is_file():
+        st.markdown("### 🏆 Model Comparison: Linear Regression vs Random Forest vs Gradient Boosting vs MLP")
+        st.image(str(comp_chart), caption="Architectural Benchmarking: Comparing Models on Structured Only vs. Multimodal Data", use_container_width=True)
+        st.caption("Demonstrates the evolutionary stages of the project: evaluating traditional baselines against our multimodal pipeline.")
+        st.markdown("---")
+    
+    st.markdown("### 🔬 In-Depth Diagnostic Plots (Proposed Multimodal MLP)")
     
     # Grid of graphs
     g_col1, g_col2 = st.columns(2)
+
     
     with g_col1:
         actual_vs_pred = OUTPUTS_DIR / "actual_vs_predicted.png"
