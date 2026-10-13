@@ -24,15 +24,18 @@ def build_parser() -> argparse.ArgumentParser:
     action = parser.add_mutually_exclusive_group(required=False)
     action.add_argument("--train", action="store_true", help="Developer mode: tune and train the MLP, then exit")
     action.add_argument("--evaluate", action="store_true", help="Developer mode: evaluate the saved model, then exit")
-    action.add_argument("--predict", action="store_true", help="Developer mode: enter prediction mode using the saved model")
+    action.add_argument("--cli", action="store_true", help="Developer mode: enter terminal interactive prediction mode")
+
     parser.add_argument("--data", type=Path, default=DEFAULT_DATA, help="Dataset directory (default: ./data)")
     parser.add_argument("--model", type=Path, default=DEFAULT_MODEL, help="Saved model path")
     parser.add_argument("--outputs", type=Path, default=DEFAULT_OUTPUTS, help="Metrics/plots output directory")
-    parser.add_argument("--use-images", action="store_true", help="Developer training option: add handcrafted linked-photo features")
+    parser.add_argument("--use-images", action=argparse.BooleanOptionalAction, default=True, help="Include ResNet-18 CNN photo features (default: True)")
     parser.add_argument("--image", type=Path, help="Optional exterior photo for --predict with an image-trained model")
+
     parser.add_argument("--search-iterations", type=int, default=4, help="RandomizedSearchCV candidates (default: 4; maximum 8)")
     parser.add_argument("--cv", type=int, default=3, help="Training-fold CV count (default: 3)")
     return parser
+
 
 
 def _print_metrics(metrics: dict) -> None:
@@ -104,28 +107,39 @@ def _run_full_application(args: argparse.Namespace) -> None:
     interactive_prediction_loop(bundle, frame)
 
 
+def _launch_ui() -> None:
+    import subprocess
+    import sys
+    app_path = ROOT / "app.py"
+    print("Launching House Price Prediction Web UI (Streamlit)...")
+    subprocess.run([sys.executable, "-m", "streamlit", "run", str(app_path)])
+
+
 def main() -> None:
     args = build_parser().parse_args()
+
+
     if args.train:
         train_model(args.data, args.model, args.outputs, use_images=args.use_images,
                     n_iter=args.search_iterations, cv=args.cv)
     elif args.evaluate:
         if not args.model.is_file():
-            raise FileNotFoundError(f"Saved model not found: {args.model}. Run `python main.py` first.")
+            raise FileNotFoundError(f"Saved model not found: {args.model}. Run `python main.py --train` first.")
         bundle = joblib.load(args.model)
         csv_path = ensure_csv(args.data)
         frame = load_dataset(csv_path)
         frame.attrs["data_dir"] = str(args.data)
         metrics = evaluate_saved_model(bundle, frame, args.outputs)
         _print_metrics(metrics)
-    elif args.predict:
+    elif args.cli:
         if not args.model.is_file():
-            raise FileNotFoundError(f"Saved model not found: {args.model}. Run `python main.py` first.")
+            raise FileNotFoundError(f"Saved model not found: {args.model}. Run `python main.py --train` first.")
         csv_path = ensure_csv(args.data)
         frame = load_dataset(csv_path)
         interactive_predict(args.model, image_path=args.image, reference_frame=frame)
     else:
-        _run_full_application(args)
+        # Default behavior for `python main.py`: launch the UI directly!
+        _launch_ui()
 
 
 if __name__ == "__main__":
